@@ -1,3 +1,5 @@
+#This class structure assumes that guests go to the karaoke rooms alone. In reality, they might go in groups, and this is a possible extension that could be made.
+
 class Guest
 
 attr_reader(:name)

@@ -16,6 +16,12 @@ def setup #ARRANGE
   @song3=Song.new("All you need is love")
   @song4=Song.new("The shoop shoop song")
   @song5=Song.new("Ave Maria")
+
+  @guest1=Guest.new("Amy")
+  @guest2=Guest.new("Mo")
+  @guest3=Guest.new("Sam")
+  @guest4=Guest.new("Jodi")
+  @guest5=Guest.new("Shaz")
 end
 
 def test_room_has_name
@@ -40,10 +46,26 @@ def test_show_playlist_titles
   @room1.add_song_to_playlist(@song1)
   @room1.add_song_to_playlist(@song5)
   actual_result = @room1.show_playlist_titles()
-  #binding.pry
   assert_equal(expected, actual_result)
 end
 
+#next tests are checking guests into a room. responsibility was something I debated (it could be the guest controlling this, or even an outside class (such as reception). However, based on similar systems we have worked on, I think it's simplest to make the room responsible for booking (we could assume that the room by definition has a receptionist). The simple function will just be the ability to add a guest, whilst developments might include making sure the room does not get overbooked (needs a capacity integer and an array of occupants to count), and preventing people from booking if they have no money. how would we assert the basic test? We'll need to instantiate some guests, plus we need an array of occupants - at this point, we don't care who the occupants are, so a count would be sufficient. We need to begin by testing that the room starts empty
 
+def test_count_occupants_room_at_start_is_empty
+assert_equal(0, @room1.count_occupants())
+end
+
+def test_room_can_check_in_guest
+@room1.check_in_guest(@guest1)
+@room1.check_in_guest(@guest2)
+assert_equal(2, @room1.count_occupants())
+end
+
+def test_room_can_check_out_guest
+@room1.check_in_guest(@guest1)
+@room1.check_in_guest(@guest2)
+@room1.check_out_guest(@guest3)
+assert_equal(2, @room1.count_occupants())
+end
 
 end

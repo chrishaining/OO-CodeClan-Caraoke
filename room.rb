@@ -8,6 +8,7 @@ class Room
     @occupants = [] #This will be useful when checking that capacity has not been exceeded. It starts uninitialized
     @room_capacity = room_capacity #requires to be initialized, as it is unlikely to change - this is because it would be based on the size of the room. It's possible someone might change it in future (e.g. because they want to get more people in a room, or to give people more space. But at the moment we could assume there would be a safety decision made. E.g. a given room can hold maximum X people.)
     @fee = fee
+    @drinks_stock = []
   end
 
   #.show_playlist method returns the array of songs for a given room. I originally put a parameter of room, but this is unnecessary as the method is always called on the instance of the room (so, we already know which room the method applies to)
@@ -71,6 +72,42 @@ class Room
   #   end
   #
   # end
+
+
+def cheer_for_favourite_song(guest)
+  @playlist.include?(guest.favourite_song)
+  return "Wooooooooo!!!!"
+end
+
+#show_drinks allows us to see the drinks stock (which is an array)
+def show_drinks()
+  @drinks_stock.each { |type, price| "#{type}: #{price}"}
+end
+
+def show_drinks_count()
+  return @drinks_stock.length
+end
+
+#add_drinks_to_stock populates a room's drink stock
+def add_drinks_to_stock(drink)
+  @drinks_stock << drink
+end
+
+#check whether a drink is in stock and return if not
+def tell_guest_drink_is_not_in_stock(drink)
+  return "Sorry, we don't have that drink. Can I get you something else?" if @drinks_stock.include?(drink) == false
+end
+
+def refuse_guest_drink_if_they_cannot_afford_it(guest, drink)
+  return "Money. That's what I want." if drink.price > guest.wallet
+end
+
+def serve_drink_to_guest(guest, drink)
+  @drinks_stock.delete(drink)
+  return guest.tab += drink.price
+
+end
+
 
 
   #DO NOT TOUCH THE FOLLOWING END - IT IS FOR THE WHOLE CLASS

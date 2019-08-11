@@ -1,4 +1,4 @@
-#I have chosen the room as the class with main responsibility. I was going to create an additional reception or karaoke bar class (that is, a central point or building in which the rooms are located). However, I chose not to add this additional class as it would add a layer of complexity and was not mentioned in the brief. For a possible future extension, it might be an idea to add this reception or karaoke bar class.
+#I have chosen the room as the class with main responsibility. I was going to create an additional reception or karaoke bar class (that is, a central point or building in which the rooms are located). However, I chose not to add this additional class as it would add a layer of complexity and was not mentioned in the brief. For a possible future extension, it might be an idea to add this reception or karaoke bar class. However, it would mean a lot of refactoring.
 
 class Room
 

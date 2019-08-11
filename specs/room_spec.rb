@@ -18,11 +18,11 @@ class RoomTest < MiniTest::Test
     @song4=Song.new("The shoop shoop song")
     @song5=Song.new("Ave Maria")
 
-    @guest1=Guest.new("Amy", 10, 0, "Rainy days and Mondays")
-    @guest2=Guest.new("Mo", 20, 0, "The shoop shoop song")
-    @guest3=Guest.new("Sam", 20, 0, "Girls just wanna have fun")
-    @guest4=Guest.new("Jodi", 20, 0, "White Christmas")
-    @guest5=Guest.new("Shaz", 20, 0, "Boom boom")
+    @guest1=Guest.new("Amy", 10, "Rainy days and Mondays")
+    @guest2=Guest.new("Mo", 20, "The shoop shoop song")
+    @guest3=Guest.new("Sam", 20, "Girls just wanna have fun")
+    @guest4=Guest.new("Jodi", 20, "White Christmas")
+    @guest5=Guest.new("Shaz", 20, "Boom boom")
 
     # @vodka=Drink.new(5.00)
     # @water=Drink.new(1.50)
@@ -172,11 +172,12 @@ class RoomTest < MiniTest::Test
     assert_equal(expected, @room1.tell_guest_drink_is_not_in_stock(@drink3))
   end
 
-  #tests that the room refuses to serve a drink to a customer who cannot afford that drink
+  #tests that the room refuses to serve a drink to a customer who cannot afford that drink. may need to change this.
   def test_guest_cannot_buy_drink_if_they_have_insufficient_funds
     @room1.add_drinks_to_stock(@drink1)
     @room1.add_drinks_to_stock(@drink2)
-    guest6=Guest.new("Kaka", 1.00, 0, "Always look on the bright side of life.")
+    guest6=Guest.new("Kaka", 1.00, "Always look on the bright side of life.")
+    guest6.show_tab
     expected = "Money. That's what I want."
     assert_equal(expected, @room1.refuse_guest_drink_if_they_cannot_afford_it(guest6, @drink1))
   end
@@ -197,21 +198,40 @@ class RoomTest < MiniTest::Test
     assert_equal(1.50, @guest2.show_tab())
   end
 
-#Before testing that the till increases, we should check it starts at 0
-def tests_that_till_starts_at_0
-end
+  #Before testing that the till increases, we should check it starts at 0
+  def tests_that_till_starts_at_0
+    assert_equal(0, @room1.till())
+  end
 
   #tests that when the guest pays their tab, the room's till increases accordingly.
-def test_when_guest_pays_tab_till_increases
+  def test_when_guest_pays_tab_till_increases
+    guest6=Guest.new("Kaka", 50.00, "Always look on the bright side of life.")
+    @room1.serve_drink_to_guest(guest6, @drink2)
+    guest6.show_tab()
+    @room1.guest_pays_tab(guest6)
+    assert_equal(1.50, @room1.till())
+  end
 
-assert_equal()
+  #tests that when a guest pays their tab, their wallet decreases (controlled by room, but maybe best to go in guest?)
+  def test_guest_wallet_decreases_when_they_pay_their_tab
+    guest6=Guest.new("Kaka", 50.00, "Always look on the bright side of life.")
+    @room1.serve_drink_to_guest(guest6, @drink2)
+    #guest6.tab()
+    @room1.guest_pays_tab(guest6)
+    #@room1.till()
+  #  binding.pry
+    assert_equal(48.50, guest6.wallet())
+  end
+
+  #tests that when a guest pays their tab, their tab goes to zero
+def test_room_has_name
+  guest6=Guest.new("Kaka", 50.00, "Always look on the bright side of life.")
+  @room1.serve_drink_to_guest(guest6, @drink2)
+  @room1.guest_pays_tab(guest6)
+assert_equal(0, guest6.tab())
 end
 
-  #tests that the room can serve a drink to a guest if the drink is in stock
-
-
-
-  #tests that the room can serve a drink to a guest if the have enough money
+  #needs to be credit_limit? credit_limit starts at wallet-fee. if tab = credit_limit, then no more drinks can be bought. but if
 
   #supertest for serving a drink
 

@@ -1,6 +1,7 @@
 class Room
 
   attr_reader(:room_name, :room_capacity, :fee)
+  attr_accessor(:till)
 
   def initialize(room_name, room_capacity, fee)
     @room_name = room_name
@@ -9,6 +10,7 @@ class Room
     @room_capacity = room_capacity #requires to be initialized, as it is unlikely to change - this is because it would be based on the size of the room. It's possible someone might change it in future (e.g. because they want to get more people in a room, or to give people more space. But at the moment we could assume there would be a safety decision made. E.g. a given room can hold maximum X people.)
     @fee = fee
     @drinks_stock = []
+    @till = 0
   end
 
   #.show_playlist method returns the array of songs for a given room. I originally put a parameter of room, but this is unnecessary as the method is always called on the instance of the room (so, we already know which room the method applies to)
@@ -20,6 +22,10 @@ class Room
   def add_song_to_playlist(song)
     @playlist << song
   end
+
+  # def show_till()
+  #   return @till
+  # end
 
   #Because .add_song_to_playlist adds the whole song (and all its attributes) to the playlist array, the result of displaying the playlist will be ugly. At this stage users only want the title (though in an extended brief they might want other attributes such as artist, song length, year records). So I want to return just the titles.
   def show_playlist_titles()
@@ -74,41 +80,48 @@ class Room
   # end
 
 
-def cheer_for_favourite_song(guest)
-  @playlist.include?(guest.favourite_song)
-  return "Wooooooooo!!!!"
-end
+  def cheer_for_favourite_song(guest)
+    @playlist.include?(guest.favourite_song)
+    return "Wooooooooo!!!!"
+  end
 
-#show_drinks allows us to see the drinks stock (which is an array)
-def show_drinks()
-  @drinks_stock.each { |type, price| "#{type}: #{price}"}
-end
+  #show_drinks allows us to see the drinks stock (which is an array)
+  def show_drinks()
+    @drinks_stock.each { |type, price| "#{type}: #{price}"}
+  end
 
-def show_drinks_count()
-  return @drinks_stock.length
-end
+  def show_drinks_count()
+    return @drinks_stock.length
+  end
 
-#add_drinks_to_stock populates a room's drink stock
-def add_drinks_to_stock(drink)
-  @drinks_stock << drink
-end
+  #add_drinks_to_stock populates a room's drink stock
+  def add_drinks_to_stock(drink)
+    @drinks_stock << drink
+  end
 
-#check whether a drink is in stock and return if not
-def tell_guest_drink_is_not_in_stock(drink)
-  return "Sorry, we don't have that drink. Can I get you something else?" if @drinks_stock.include?(drink) == false
-end
+  #check whether a drink is in stock and return if not
+  def tell_guest_drink_is_not_in_stock(drink)
+    return "Sorry, we don't have that drink. Can I get you something else?" if @drinks_stock.include?(drink) == false
+  end
 
-def refuse_guest_drink_if_they_cannot_afford_it(guest, drink)
-  return "Money. That's what I want." if drink.price > guest.wallet
-end
+  def refuse_guest_drink_if_they_cannot_afford_it(guest, drink)
+    return "Money. That's what I want." if drink.price > guest.wallet
+  end
 
-def serve_drink_to_guest(guest, drink)
-  @drinks_stock.delete(drink)
-  return guest.tab += drink.price
+  def serve_drink_to_guest(guest, drink)
+    @drinks_stock.delete(drink)
+    return guest.tab += drink.price
+  end
 
-end
-
-
+  def guest_pays_tab(guest)
+    @till = @till += guest.tab
+    guest.wallet_decreases_when_tab_is_paid()
+    #guest.wallet = guest.wallet - guest.tab
+    guest.tab = 0 #guest.tab -= guest.tab
+    return @till
+    return guest.wallet_decreases_when_tab_is_paid()
+    return guest.tab
+  end
 
   #DO NOT TOUCH THE FOLLOWING END - IT IS FOR THE WHOLE CLASS
 end

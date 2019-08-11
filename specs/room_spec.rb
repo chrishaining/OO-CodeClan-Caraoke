@@ -211,7 +211,7 @@ class RoomTest < MiniTest::Test
     @room1.guest_pays_tab(@guest2)
     assert_equal(18.50, @guest2.wallet())
   end
-  
+
 
   #DO NOT TOUCH. THIS IS THE END FOR THE TEST CLASS.
 end

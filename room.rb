@@ -1,3 +1,5 @@
+#I have chosen the room as the class with main responsibility. I was going to create an additional reception or karaoke bar class (that is, a central point or building in which the rooms are located). However, I chose not to add this additional class as it would add a layer of complexity and was not mentioned in the brief. For a possible future extension, it might be an idea to add this reception or karaoke bar class.
+
 class Room
 
   attr_reader(:room_name, :room_capacity, :fee)
@@ -6,14 +8,14 @@ class Room
   def initialize(room_name, room_capacity, fee)
     @room_name = room_name
     @playlist = []
-    @occupants = [] #This will be useful when checking that capacity has not been exceeded. It starts uninitialized
-    @room_capacity = room_capacity #requires to be initialized, as it is unlikely to change - this is because it would be based on the size of the room. It's possible someone might change it in future (e.g. because they want to get more people in a room, or to give people more space. But at the moment we could assume there would be a safety decision made. E.g. a given room can hold maximum X people.)
+    @occupants = []
+    @room_capacity = room_capacity
     @fee = fee
     @drinks_stock = []
     @till = 0
   end
 
-  #.show_playlist method returns the array of songs for a given room. I originally put a parameter of room, but this is unnecessary as the method is always called on the instance of the room (so, we already know which room the method applies to)
+  #.show_playlist method returns the array of songs for a given room.
   def show_playlist()
     return @playlist #note that if I change return to puts, the test fails, but if I change it to 'p' it passes.
   end
@@ -22,10 +24,6 @@ class Room
   def add_song_to_playlist(song)
     @playlist << song
   end
-
-  # def show_till()
-  #   return @till
-  # end
 
   #Because .add_song_to_playlist adds the whole song (and all its attributes) to the playlist array, the result of displaying the playlist will be ugly. At this stage users only want the title (though in an extended brief they might want other attributes such as artist, song length, year records). So I want to return just the titles.
   def show_playlist_titles()
@@ -37,32 +35,14 @@ class Room
     return @occupants.length
   end
 
-  #This function checks in guests by adding them to the occupants array. Because my system only allows guests to book a room individually (rather than as groups of guests) this works. However, if we wanted to allow group booking (which would be more like the real-world situation) I would have to amend the code. Might be something like 'if group_of_guests.length + @occupants.length <= @room_capacity'. I've given a silly return if the room is full, but I could change it to 'Sorry, this room is full. Would you like to try another room?'
-
-  #I will refactor three of the tests - room_is_full?, guest_cannot_pay_fee? and check_in_guest - so that they all go into one function, check_in_guest.
-  def room_is_full?()
-    return "Come on now go! Walk out the door! Just turn around now, cause you're not welcome any more." if @occupants.length >= @room_capacity
-  end
-
-  def guest_cannot_pay_fee?(guest)
-    return "The best things in life are free. Go and do them instead!" if guest.wallet < @fee
-  end
-
+  #Functions to check in guests. This function checks in guests by adding them to the occupants array. Because my system only allows guests to book a room individually (rather than as groups of guests) this works. However, if we wanted to allow group booking (which would be more like the real-world situation) I would have to amend the code. Might be something like 'if group_of_guests.length + @occupants.length <= @room_capacity'.
   def check_in_guest(guest)
-    return "Come on now go! Walk out the door! Just turn around now, cause you're not welcome any more." if @occupants.length >= @room_capacity
-    return "The best things in life are free. Go and do them instead!" if guest.wallet < @fee
+    # return room_is_full?()
+    # return guest_cannot_pay_fee?(guest)
+    return "Sorry. There's no room." if @occupants.length >= @room_capacity
+    return "You don't have enough money to get in." if guest.wallet < @fee
     @occupants << guest
   end
-  # def check_in_guest(guest)
-  #   return if room_is_full?() || guest_cannot_pay_fee?(guest)
-  #   @occupants << guest
-  # end
-
-  # def check_in_guest(guest)
-  #   return if room_is_full?()
-  #   return if guest_cannot_pay_fee?(guest)
-  #   @occupants << guest
-  # end
 
   #This function checks out guests by removing them from the occupants array. First step is to get it to remove them. But it might be an issue if I try to remove someone who's not in the occupants array.
   def check_out_guest(guest)
@@ -71,14 +51,6 @@ class Room
     end
     return "Guest is not in this room"
   end
-
-  # def check_there_is_enough_room_for_guest(guest)
-  #   if @occupants.length < @room_capacity
-  #     check_in_guest(guest)
-  #   end
-  #
-  # end
-
 
   def cheer_for_favourite_song(guest)
     @playlist.include?(guest.favourite_song)
@@ -105,22 +77,20 @@ class Room
   end
 
   def refuse_guest_drink_if_they_cannot_afford_it(guest, drink)
-    return "Money. That's what I want." if drink.price > guest.wallet
+    return "You can't afford this drink." if drink.price > guest.wallet
   end
 
   def serve_drink_to_guest(guest, drink)
+    return "Sorry, we don't have that drink. Can I get you something else?" if @drinks_stock.include?(drink) == false
+    return "You can't afford this drink." if drink.price > guest.wallet
     @drinks_stock.delete(drink)
-    return guest.tab += drink.price
+    guest.tab += drink.price
   end
 
   def guest_pays_tab(guest)
     @till = @till += guest.tab
     guest.wallet_decreases_when_tab_is_paid()
-    #guest.wallet = guest.wallet - guest.tab
-    guest.tab = 0 #guest.tab -= guest.tab
-    return @till
-    return guest.wallet_decreases_when_tab_is_paid()
-    return guest.tab
+    guest.tab_clears_when_paid()
   end
 
   #DO NOT TOUCH THE FOLLOWING END - IT IS FOR THE WHOLE CLASS

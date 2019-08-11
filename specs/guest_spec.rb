@@ -3,6 +3,7 @@ require('minitest/rg')
 require_relative('../guest')
 require_relative('../room')
 require_relative('../drink')
+require('pry')
 
 class GuestTest < MiniTest::Test
 
@@ -42,19 +43,19 @@ class GuestTest < MiniTest::Test
   end
 
   def test_wallet_decreases_when_tab_is_paid
+    @room1.add_drinks_to_stock(@drink2)
     @room1.serve_drink_to_guest(@guest2, @drink2)
     @guest2.wallet_decreases_when_tab_is_paid()
     assert_equal(18.50, @guest2.wallet())
   end
 
-# def test_guest_tab_increases_when_they_buy_drink
-#
-#
-# assert_equal(1.50, @guest5.show_tab())
-# end
-  # def test_guest_starting_location_is_nil
-  #   assert_nil(@guest4.location())
-  # end
+  def test_tab_clears_when_tab_is_paid
+    @room1.add_drinks_to_stock(@drink2)
+    @room1.serve_drink_to_guest(@guest2, @drink2)
+    @guest2.wallet_decreases_when_tab_is_paid()
+    @room1.guest_pays_tab(@guest2)
+    assert_equal(0, @guest2.tab_clears_when_paid())
+  end
 
 
 

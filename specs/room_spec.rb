@@ -24,12 +24,6 @@ class RoomTest < MiniTest::Test
     @guest4=Guest.new("Jodi", 20, "White Christmas")
     @guest5=Guest.new("Shaz", 20, "Boom boom")
 
-    # @vodka=Drink.new(5.00)
-    # @water=Drink.new(1.50)
-    # @cola=Drink.new(2.50)
-    # @milk=Drink.new(1.75)
-    # @beer=Drink.new(3.00)
-
     @drink1=Drink.new("Vodka", 5.00)
     @drink2=Drink.new("Water", 1.50)
     @drink3=Drink.new("Cola", 2.50)
@@ -112,8 +106,7 @@ class RoomTest < MiniTest::Test
   def test_room_can_check_in_guest__insufficient_capacity
     @room2.check_in_guest(@guest3)
     @room2.check_in_guest(@guest4)
-    #binding.pry
-    assert_equal("Come on now go! Walk out the door! Just turn around now, cause you're not welcome any more.", @room2.check_in_guest(@guest4))
+    assert_equal("Sorry. There's no room.", @room2.check_in_guest(@guest4))
   end
 
   def test_room_can_check_in_guest_can_pay_fee
@@ -122,7 +115,7 @@ class RoomTest < MiniTest::Test
   end
 
   def test_guests_cannot_be_checked_in_if_they_cannot_afford_fee
-    assert_equal("The best things in life are free. Go and do them instead!", @room2.guest_cannot_pay_fee?(@guest1))
+    assert_equal("You don't have enough money to get in.", @room2.check_in_guest(@guest1))
   end
 
   def test_room_can_check_out_guest
@@ -178,7 +171,7 @@ class RoomTest < MiniTest::Test
     @room1.add_drinks_to_stock(@drink2)
     guest6=Guest.new("Kaka", 1.00, "Always look on the bright side of life.")
     guest6.show_tab
-    expected = "Money. That's what I want."
+    expected = "You can't afford this drink."
     assert_equal(expected, @room1.refuse_guest_drink_if_they_cannot_afford_it(guest6, @drink1))
   end
 
@@ -190,7 +183,7 @@ class RoomTest < MiniTest::Test
     assert_equal(1, @room1.show_drinks_count())
   end
 
-  #tests that if the room serves a drink to a guest, the guest tab increases. Tab is for drinks and fee??. DOES THIS ALSO NEED A FUNCTION IN GUEST CLASS?
+  #tests that if the room serves a drink to a guest, the guest tab increases. Tab is for drinks.
   def test_guest_tab_increases_if_room_serves_them_drink
     @room1.add_drinks_to_stock(@drink1)
     @room1.add_drinks_to_stock(@drink2)
@@ -204,36 +197,21 @@ class RoomTest < MiniTest::Test
   end
 
   #tests that when the guest pays their tab, the room's till increases accordingly.
-  def test_when_guest_pays_tab_till_increases
-    guest6=Guest.new("Kaka", 50.00, "Always look on the bright side of life.")
-    @room1.serve_drink_to_guest(guest6, @drink2)
-    guest6.show_tab()
-    @room1.guest_pays_tab(guest6)
+  def test_till_increases_when_guest_pays_tab
+    @room1.add_drinks_to_stock(@drink2)
+    @room1.serve_drink_to_guest(@guest2, @drink2)
+    @room1.guest_pays_tab(@guest2)
     assert_equal(1.50, @room1.till())
   end
 
-  #tests that when a guest pays their tab, their wallet decreases (controlled by room, but maybe best to go in guest?)
+  #tests that when a guest pays their tab, their wallet decreases
   def test_guest_wallet_decreases_when_they_pay_their_tab
-    guest6=Guest.new("Kaka", 50.00, "Always look on the bright side of life.")
-    @room1.serve_drink_to_guest(guest6, @drink2)
-    #guest6.tab()
-    @room1.guest_pays_tab(guest6)
-    #@room1.till()
-  #  binding.pry
-    assert_equal(48.50, guest6.wallet())
+    @room1.add_drinks_to_stock(@drink2)
+    @room1.serve_drink_to_guest(@guest2, @drink2)
+    @room1.guest_pays_tab(@guest2)
+    assert_equal(18.50, @guest2.wallet())
   end
-
-  #tests that when a guest pays their tab, their tab goes to zero
-def test_room_has_name
-  guest6=Guest.new("Kaka", 50.00, "Always look on the bright side of life.")
-  @room1.serve_drink_to_guest(guest6, @drink2)
-  @room1.guest_pays_tab(guest6)
-assert_equal(0, guest6.tab())
-end
-
-  #needs to be credit_limit? credit_limit starts at wallet-fee. if tab = credit_limit, then no more drinks can be bought. but if
-
-  #supertest for serving a drink
+  
 
   #DO NOT TOUCH. THIS IS THE END FOR THE TEST CLASS.
 end

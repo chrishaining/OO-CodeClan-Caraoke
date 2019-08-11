@@ -5,12 +5,6 @@ require_relative('../drink')
 class DrinkTest < Minitest::Test
 
 def setup
-  # @vodka=Drink.new(5.00)
-  # @water=Drink.new(1.50)
-  # @cola=Drink.new(2.50)
-  # @milk=Drink.new(1.75)
-  # @beer=Drink.new(3.00)
-
   @drink1=Drink.new("Vodka", 5.00)
   @drink2=Drink.new("Water", 1.50)
   @drink3=Drink.new("Cola", 2.50)
@@ -27,7 +21,6 @@ end
 def test_drink_has_price
   assert_equal(1.50, @drink2.price)
 end
-
 
 #DO NOT TOUCH. THIS IS THE END FOR THE TEST CLASS.
 end

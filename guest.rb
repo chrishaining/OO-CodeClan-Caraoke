@@ -6,7 +6,6 @@ class Guest
   attr_accessor(:tab, :wallet)
   #attr_accessor(:location)
 
-
   def initialize(name, wallet, favourite_song)
     @name = name
     @wallet = wallet
@@ -19,6 +18,7 @@ class Guest
   def show_tab()
     return @tab
   end
+
   #.location - this will be dependent on a function in the room class. Once the room class has assigned a guest to a room, that guest's location should update to the new room.
   # def location()
   #   @location == ??
@@ -31,9 +31,12 @@ class Guest
   end
 
   def wallet_decreases_when_tab_is_paid()
-    @wallet = @wallet - @tab
+    @wallet = @wallet -= @tab
     return @wallet
   end
 
+  def tab_clears_when_paid()
+    @tab = 0
+  end
   #DO NOT TOUCH THE FOLLOWING END - IT IS FOR THE WHOLE CLASS
 end

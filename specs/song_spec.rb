@@ -12,12 +12,8 @@ class SongTest < MiniTest::Test
     @song5=Song.new("Ave Maria")
   end
 
-
-
   def test_song_has_title
     assert_equal("White Christmas", @song1.title())
   end
-
-
 
 end

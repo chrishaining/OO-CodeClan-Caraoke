@@ -1,6 +1,6 @@
 class Drink
 
-#the drink class is simple, with only one attribute to start - price. I originally had type and price (with each instance in the spec file having the form @Drink 1(name="vodka", price=1:50)). But because each instance is not unique (so, I could have multiple copies of @Drink1 in stock) it is unnecessary to use the identifier @drink1. It's simpler to have only one attribute. OR???!!!
+#the drink class is simple, with only two attributes (to start with, at least). The drinks won't have responsibility for other classes.
 attr_reader(:type, :price)
 
 def initialize(type, price)
